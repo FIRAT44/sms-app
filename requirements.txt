@@ -1,0 +1,13 @@
+streamlit
+pandas
+pyqt6
+pyqt6-webengine
+matplotlib
+plotly
+fpdf
+pyvis
+openpyxl
+xlsxwriter
+streamlit-calendar
+streamlit-aggrid
+streamlit-echarts
