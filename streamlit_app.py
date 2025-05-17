@@ -1,27 +1,53 @@
-import os
 import streamlit as st
 
-# Paylaşılan klasör yolu
-SHARE_PATH = r"\\Ayjetfile\shared\SMS\1400-SMS PROGRAM"
-USER_FILE  = os.path.join(SHARE_PATH, "user.txt")
+# ————— Sabit kullanıcı bilgileri —————
+VALID_USERS = {"admin": "12345", "user1": "sifre1"}
 
-# Ağ paylaşıma erişim kontrolü
-if not os.path.isfile(USER_FILE):
-    st.error("‼️ Erişim hatası: Ağ üzerinde `user.txt` dosyasına ulaşılamıyor.\nLütfen local ağa bağlanın veya VPN ile erişim sağlayın.")
-    st.stop()
+# ————— Session state ile oturum takibi —————
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
 
-# --------------------------------------------------
-# Aşağıda, erişim varsa çalışacak kodunuz
-from utils.auth import login_required
-# login_required()
+# ————— CSS ile sidebar’ı gizleyen stil —————
+HIDE_SIDEBAR_STYLE = """
+    <style>
+        /* Streamlit üst menü ve footer’ı gizle (isteğe bağlı) */
+        #MainMenu {visibility: hidden;}
+        header {visibility: hidden;}
+        footer {visibility: hidden;}
+        /* Sidebar nav (sayfalar) tamamen gizlensin */
+        [data-testid="stSidebarNav"] {display: none !important;}
+        /* Eğer kendi selectbox’ınızla sayfa seçimi yapıyorsanız onu da gizleyin */
+        .css-1lcbmhc {visibility: hidden;}
+    </style>
+"""
 
-from utils.db_setup import initialize_database
-initialize_database()
+def show_login():
+    st.markdown(HIDE_SIDEBAR_STYLE, unsafe_allow_html=True)
+    st.title("🔐 Ayjet SMS Programı Giriş")
+    st.write("Lütfen kullanıcı adı ve şifrenizi girin.")
+    username = st.text_input("Kullanıcı Adı")
+    password = st.text_input("Şifre", type="password")
+    if st.button("Giriş Yap"):
+        if username in VALID_USERS and VALID_USERS[username] == password:
+            st.session_state.authenticated = True
+            st.rerun()  # Giriş başarılıysa sayfayı yenile
+        else:
+            st.error("‼️ Geçersiz kullanıcı adı veya şifre.")
 
+# ————— Uygulama akışı —————
+if not st.session_state.authenticated:
+    show_login()
+    st.stop()  # buradan sonrası, login olmadan hiçbir şey çalışmaz
+
+# ————— Giriş yapıldıktan sonra gösterilecek kodlar —————
 st.set_page_config(page_title="Ayjet SMS Programı ✈️", layout="wide")
 st.title("Ayjet Uçuş Okulu SMS Programı ✈️")
-st.markdown("""
-Bu uygulama, Emniyet Yönetim Sistemi kapsamındaki raporlar, denetimler ve takip süreçlerini kolaylaştırmak amacıyla geliştirilmiştir.
+st.sidebar.title("🔍 Menü")
+# Örneğin kendi sekme seçiminiz:
+page = st.sidebar.selectbox("Sayfa Seçin", ["Anasayfa", "Raporlar", "Denetimler", "Ayarlar"])
+if page == "Anasayfa":
+    st.write("🏠 Anasayfa içeriği...")
+elif page == "Raporlar":
+    st.write("📄 Raporlar içeriği...")
+# … diğer sayfalar …
 
-👈 Soldaki menüden bir sayfa seçerek başlayabilirsiniz.
-""")
