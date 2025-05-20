@@ -6,6 +6,7 @@ from utils.soru_yonetimi import yukle_sorular, soru_ekle, soru_sil, soru_var_mi,
 from utils.rapor_kayit import rapor_kaydet
 import os
 from utils.auth import login_required
+from datetime import datetime, date
 #login_required()
 
 # Başlık
@@ -30,7 +31,14 @@ with sekme1:
     report_number = st.text_input("Rapor Numarası")
     rapor_turu = st.selectbox("Rapor Türü", ["Voluntary", "Hazard"], key="rapor_turu_yeni")
     rapor_konusu = st.selectbox("Rapor Konusu", st.session_state["rapor_konulari"])
-    olay_tarihi = f"{st.date_input('Olay Tarihi')} {st.time_input('Olay Saati', value=datetime.now().time())}"
+    selected_date = st.date_input("Olay Tarihi", date.today())
+
+    # Saat metin girişi (HH:MM formatında)
+    default_time = datetime.now().strftime("%H:%M")
+    time_str = st.text_input("Olay Saati (HH:MM)", value=default_time)
+
+    # Birleştirilmiş olay_tarihi
+    olay_tarihi = f"{selected_date} {time_str}:00"
     veri_giris_tarihi = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     cevaplar = {}
