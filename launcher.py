@@ -25,7 +25,8 @@ time.sleep(3)
 chrome_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 if os.path.exists(chrome_path):
     webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
-    webbrowser.get('chrome').open("http://localhost:8503")
+    # Launch the Streamlit app on the same port as the server
+    webbrowser.get('chrome').open("http://localhost:8501")
 else:
     # Chrome bulunamazsa, default tarayıcı
     webbrowser.open("http://localhost:8501")
