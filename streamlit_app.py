@@ -1,5 +1,8 @@
 import streamlit as st
 
+# Page config must be set before any other Streamlit calls
+st.set_page_config(page_title="Ayjet SMS Programı ✈️", layout="wide")
+
 # ————— Sabit kullanıcı bilgileri —————
 VALID_USERS = {"admin": "12345", "user1": "sifre1"}
 
@@ -40,7 +43,6 @@ if not st.session_state.authenticated:
     st.stop()  # buradan sonrası, login olmadan hiçbir şey çalışmaz
 
 # ————— Giriş yapıldıktan sonra gösterilecek kodlar —————
-st.set_page_config(page_title="Ayjet SMS Programı ✈️", layout="wide")
 st.title("Ayjet Uçuş Okulu SMS Programı ✈️")
 st.sidebar.title("🔍 Menü")
 # Örneğin kendi sekme seçiminiz:
